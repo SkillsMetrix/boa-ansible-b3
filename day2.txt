@@ -13,7 +13,7 @@ my_post=[{"title":"welcome title","content":"dummy content","id":101}]
 def findPost(id):
     for i,p in enumerate(my_post):
         if p['id'] == id:
-            return p
+            return i
 
 # Declaring Model
 
@@ -36,10 +36,19 @@ def loadById(id:int):
     else:
     
         return {"User Found":post}
+    
+# delete record by passing ID
+@app.delete("/deletepost/{id}")
+def deleteById(id:int):
+    post=findPost(id)
+    if not post:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail='Given ID not found')
+    my_post.pop(post)
+    return {"message": "user deleted"}
 
 # add the new post
 
-@app.post("/addpost")
+@app.post("/addpost",status_code=status.HTTP_201_CREATED)
 def addpost(payload: Post):
     data= payload.dict()
     data['id']=randrange(0,1000)

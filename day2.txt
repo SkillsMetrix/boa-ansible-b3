@@ -1,11 +1,11 @@
-# import dependeny
-from fastapi import FastAPI,HTTPException,status
-from fastapi.params import Body
-from pydantic import BaseModel
-from random import randrange
 
-app= FastAPI()
-# dummy data
+from fastapi import FastAPI,HTTPException,status,APIRouter
+from fastapi.params import Body
+from random import randrange
+from .. import schema
+
+router=APIRouter(tags=["BOA UserPost Application"])
+
 my_post=[{"title":"welcome title","content":"dummy content","id":101}]
 
 # search function
@@ -15,20 +15,15 @@ def findPost(id):
         if p['id'] == id:
             return i
 
-# Declaring Model
-
-class Post(BaseModel):
-    title: str
-    content: str
 
 # load the data using get
 
-@app.get("/loadposts")
+@router.get("/loadposts")
 def loadallposts():
     return {"dummy-message": my_post}
 
 # get specific record by passing ID
-@app.get("/loadpost/{id}")
+@router.get("/loadpost/{id}")
 def loadById(id:int):
     post=findPost(id)
     if not post:
@@ -38,7 +33,7 @@ def loadById(id:int):
         return {"User Found":post}
     
 # delete record by passing ID
-@app.delete("/deletepost/{id}")
+@router.delete("/deletepost/{id}")
 def deleteById(id:int):
     post=findPost(id)
     if not post:
@@ -47,8 +42,8 @@ def deleteById(id:int):
     return {"message": "user deleted"}
 
 # update record by passing ID
-@app.put("/updatepost/{id}")
-def updateById(id:int,payload:Post):
+@router.put("/updatepost/{id}")
+def updateById(id:int,payload:schema.Post):
     post=findPost(id)
     if not post:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail='Given ID not found')
@@ -60,10 +55,31 @@ def updateById(id:int,payload:Post):
 
 # add the new post
 
-@app.post("/addpost",status_code=status.HTTP_204_NO_CONTENT)
-def addpost(payload: Post):
+@router.post("/addpost",status_code=status.HTTP_204_NO_CONTENT)
+def addpost(payload: schema.Post):
     data= payload.dict()
     data['id']=randrange(0,1000)
     my_post.append(data)
     return {"message":data}
 
+-----
+
+
+
+# import dependeny
+from fastapi import FastAPI
+from . routers import posts
+ 
+app= FastAPI()
+
+app.include_router(posts.router)
+--------
+
+from pydantic import BaseModel
+from typing import Optional
+
+class Post(BaseModel):
+    title: str
+    content: str
+    published: bool =True
+    rating: Optional[int] = None 

@@ -46,9 +46,21 @@ def deleteById(id:int):
     my_post.pop(post)
     return {"message": "user deleted"}
 
+# update record by passing ID
+@app.put("/updatepost/{id}")
+def updateById(id:int,payload:Post):
+    post=findPost(id)
+    if not post:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail='Given ID not found')
+    postdata=payload.dict()
+    postdata['id']=id
+    my_post[post]=postdata
+    return {"message": "user updated"}
+
+
 # add the new post
 
-@app.post("/addpost",status_code=status.HTTP_201_CREATED)
+@app.post("/addpost",status_code=status.HTTP_204_NO_CONTENT)
 def addpost(payload: Post):
     data= payload.dict()
     data['id']=randrange(0,1000)

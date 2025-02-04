@@ -5,23 +5,41 @@ from pydantic import BaseModel
 from random import randrange
 
 app= FastAPI()
+# dummy data
 my_post=[{"title":"welcome title","content":"dummy content","id":101}]
+
+# search function
+
+def findPost(id):
+    for i,p in enumerate(my_post):
+        if p['id'] == id:
+            return i
+
+# Declaring Model
 
 class Post(BaseModel):
     title: str
     content: str
+
+# load the data using get
+
 @app.get("/loadposts")
 def loadallposts():
-    return {"dummy-message"}
+    return {"dummy-message": my_post}
+
+# get specific record by passing ID
+@app.get("/loadpost/{id}")
+def loadById(id:int):
+    post=findPost(id)
+    
+    return {"User Found":post}
+
+# add the new post
 
 @app.post("/addpost")
 def addpost(payload: Post):
     data= payload.dict()
     data['id']=randrange(0,1000)
     my_post.append(data)
-    
     return {"message":data}
 
-@app.get("/register")
-def register():
-    return {"message":"welcome to register"}

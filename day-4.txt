@@ -1,0 +1,9 @@
+chmod 400 "boa-b3.pem"
+ 1130  ssh-copy-id -f "-o IdentityFile boa-b3.pem" ubuntu@44.241.239.89
+ 1131  ssh -o ' IdentityFile boa-b3.pem' 'ubuntu@44.241.239.89'
+ 1132  ssh ubuntu@44.241.239.89
+ 1133  history
+ 1134  clear
+ 1135  ssh-copy-id -f "-o IdentityFile boa-b3.pem" ubuntu@44.246.68.86
+ 1136  ssh -o ' IdentityFile boa-b3.pem' 'ubuntu@44.246.68.86'
+ 1137  ssh ubuntu@44.246.68.86

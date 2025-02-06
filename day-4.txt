@@ -54,4 +54,11 @@
     - name: external var
       debug:
           var: vars_from_my_vars_yml
+
+
+
+----
+ansible-playbook -i inventory.ini vardemo-playbook.yml --extra-vars '{"other_variable":"updated from command"}'
+ 1175  ansible-playbook -i inventory.ini vardemo-playbook.yml --extra-vars '{"other_variable":"updated from command"}'
+ 1176  ansible-playbook -i inventory.ini vardemo-playbook.yml --extra-vars "@my_vars.yml"
     

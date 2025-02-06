@@ -1,32 +1,18 @@
-- hosts: web
-  become: true
-  tasks:
-    - name: create a directory on web instance
-      file:
-        path: ./basic-http-server
-        state: directory
 
-------
+- name: update apt and install nginx
+  apt:
+    name: nginx
+    state: latest
+    update_cache: yes
 
-- hosts: web
-  become: true
-  tasks:
-    - name: install apache server
-      
-      apt: name=apache2 update_cache=yes state=latest
+- name: add index page
+  template: src=files/index.html dest=/usr/share/nginx/html/index.html
+
+- name: update index page
+  template: src=files/updated.html dest=/usr/share/nginx/html/index.html
 ----
 
-
-- hosts: web
+- hosts: db
   become: true
-  tasks:
-    - name: install apache server
-      
-      apt: name=apache2 update_cache=yes state=latest
-    - name: copy the new index html
-      copy:
-        src: index.html
-        dest: /var/www/html
-        owner: root
-        group: root
-        mode: '0644'
+  roles:
+    - task2

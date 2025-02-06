@@ -1,18 +1,41 @@
-
-- name: update apt and install nginx
-  apt:
-    name: nginx
-    state: latest
-    update_cache: yes
-
-- name: add index page
-  template: src=files/index.html dest=/usr/share/nginx/html/index.html
-
-- name: update index page
-  template: src=files/updated.html dest=/usr/share/nginx/html/index.html
-----
-
 - hosts: db
   become: true
   roles:
-    - task2
+    - vardemo
+  
+
+  vars:
+    #string variable
+    my_playapp_value: "demo string var"
+    #boolean
+    is_enabled: false
+    # list
+    fruits:
+      - apple
+      - banana
+      - orange
+    #dict
+    fruits_prices:
+      apple: 13
+      banana: 15
+      orange: 15
+
+    fruit_basket:
+      - name: john
+        fruits:
+          - apple
+          - orange
+          - name: john
+      - name: Jane
+        fruits:
+            - apple
+            - orange
+            - banana
+    
+    var_files:
+      - my_vars.yml
+
+  tasks:
+      - name: print string var
+        debug:
+          var: my_playapp_value

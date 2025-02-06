@@ -39,3 +39,29 @@
       - name: print string var
         debug:
           var: my_playapp_value
+
+
+
+
+
+
+
+- name: print string var
+        debug:
+          var: my_playapp_value
+      - name: print boolean
+        debug:
+          var: is_enabled
+      - name: list
+        debug:
+          var: fruits
+      - name: print list position var
+        debug:
+          var: fruits[0]
+      - name: print string var
+        debug:
+          var: fruits_prices:apple
+
+      - name: Jinja
+        debug:
+          var: fruits_prices.keys() | list | map('upper') | list

@@ -1,32 +1,27 @@
-- name: install apache server
+
+- name: update apt and install nginx
   apt:
-    name: apache2
-    state: absent
-  when: install_apache_flag
+    name: nginx
+    state: latest
+    update_cache: yes
 
-# putting multiple conditions
+- name: add index page
+  template: src=files/index.ht dest=/usr/share/nginx/html/index.html
+  register: copy_result
+  ignore_errors: true
 
-- name: combine conditions
+- name: String data
   debug:
-    var: ansible_facts['kernel_version']
-  when:
-    - ansible_facts['os_family'] == 'Debian'
-    - ansible_facts['distribution_major_version'] == "24"
+    var: copy_result
 
-- name: combine conditions using or
-  debug:
-    var: ansible_facts['kernel_version']
-  when:
-    - ansible_facts['os_family'] == 'Debian' and ansible_facts['distribution_major_version'] | int >=20
+- name: html file failed
+  template: src=index.html dest=/home/ubuntu
+  failed_when:
+    - '"Could not find or access" not in copy_result.msg'
+    - copy_result.failed == true
+  any_errors_fatal: false
 
-  
-  # register a var and evaluate the valuue using when
-
-- name: use the var
-  ansible.builtin.command: cat /home/ubuntu/user-cred.txt
-  register: test_file_content
-
-- name: use this var to perform task
-  debug:
-    var: test_file_content.stdout
-  when: test_file_content.stdout.find('allowed')!= -1
+- name: update index page
+  template: src=files/updated.html dest=/usr/share/nginx/html/index.html
+  notify: 
+    - Restart Nginx

@@ -118,36 +118,35 @@ resource "null_resource" "run_ansible" {
 -------
 
 
-- hosts: ec2_inctances
+- hosts: ec2_instances
   become: true
   tasks:
-    - name: update apt cache
+    - name: Update apt cache
       apt:
         update_cache: yes
-    
-    - name: Install Docker Dependencies
+
+    - name: Install Docker dependencies
       apt:
         name:
           - docker.io
           - python3-pip
+          
         state: present
 
-    - name: Install docker Compose
+    - name: Install Docker Compose
       apt:
         name: docker-compose
         state: present
+        
 
-    - name: Clone Application from github
+    - name: Clone Node.js app repository
       git:
         repo: https://github.com/SkillsMetrix/nodejs-demo.git
         dest: /var/www/html/nodejs-demo
 
-    - name: Build Docker Image
+    - name: Build Docker image
       command: docker build -t node-app /var/www/html/nodejs-demo
 
-    - name: Run Docker Container
+    - name: Run Docker container
       command: docker run -d -p 3000:3000 --name node-app-container node-app
-
-
-
 

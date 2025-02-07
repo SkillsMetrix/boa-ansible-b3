@@ -1,9 +1,7 @@
-
-
 provider "aws" {
   region     = "us-west-2"
   access_key = ""
-  secret_key = "x/s"
+  secret_key = ""
 }
 
 // To Generate Private Key
@@ -33,8 +31,8 @@ resource "local_file" "private_key" {
 }
 
 # Create a security group
-resource "aws_security_group" "sg_ec2" {
-  name        = "sg_ec2"
+resource "aws_security_group" "boab3_ec2" {
+  name        = "boab3_ec2"
   description = "Security group for EC2"
 
   ingress {
@@ -63,7 +61,7 @@ resource "aws_instance" "public_instance" {
   ami                    = "ami-00c257e12d6828491"
   instance_type          = "t2.micro"
   key_name               = aws_key_pair.key_pair.key_name
-  vpc_security_group_ids = [aws_security_group.sg_ec2.id]
+  vpc_security_group_ids = [aws_security_group.boab3_ec2.id]
 
   tags = {
     Name = "public_instance"
